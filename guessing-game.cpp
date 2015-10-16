@@ -32,7 +32,7 @@ int main(){
 
     welcomePlayer();
 
-    bool useCustomRange = inputChoice("Do you want to choose a range? [y] or [n]", "y", "n");
+    bool useCustomRange = inputChoice("Do you want to choose a range?", "y", "n");
 
     int range = inputRange(50, useCustomRange, "Choose a range:");
 
@@ -77,12 +77,12 @@ int main(){
                 int points = calculatePoints(countGuesses);
                 cout << "Your points: " << points << endl << endl;
                 if(points>0){
-                    bool playDoubleOrNothing = inputChoice("Do you want to play double or nothing? [y] or [n]", "y", "n");
+                    bool playDoubleOrNothing = inputChoice("Do you want to play double or nothing?", "y", "n");
                     if(playDoubleOrNothing){
                         gameMode=2;
                     }
                 }else{
-                    bool restart = inputChoice("Game Over, do you want to play again? [y] or [n]", "y", "n");
+                    bool restart = inputChoice("Game Over, do you want to play again?", "y", "n");
                     if(restart){
                         cout << endl << "Restarting..." << endl;
                         //Fix later
@@ -168,7 +168,7 @@ bool inputChoice(string message, string firstChoice, string secondChoice){
     bool answer;
     while(!validAnswer){
         string input;
-        cout << message << endl << "> ";
+        cout << message << ", [" << firstChoice << "] or [" << secondChoice << "]" << endl << "> ";
         cin >> input;
         clearCin();
         clearScreen();
