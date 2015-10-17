@@ -26,6 +26,7 @@ void clearCin();
 void printArray(vector<int> vector, string message);
 void printEasyArray(vector<int> vector, int number, string message);
 void clearScreen();
+void printTest(int maxWidth, string output);
 
 int main(){
 
@@ -35,7 +36,9 @@ int main(){
 
     bool useCustomRange = inputChoice("Do you want to choose a range?", "y", "n");
 
-    int range = inputRange(50, useCustomRange, "Choose a range:");
+    int defaultRange = 50;
+
+    int range = inputRange(defaultRange, useCustomRange, "Choose a range:");
 
     int gameOver = false;
 
@@ -44,13 +47,14 @@ int main(){
 
     while(gameOver==false){
 
+        int points = 0;
         int countGuesses = 0;
         int random = generateRandom(range, 1);
         vector<int> currentSessionVector;
 
         while(gameMode == 1){
 
-            //cout << endl << "Random number: " << random << endl;
+            cout << endl << "Random number: " << random << endl;
             if(currentSessionVector.size()>0){
                 printEasyArray(currentSessionVector, random, "These are the guesses you made before:");
             }
@@ -75,7 +79,7 @@ int main(){
 
             if(checkMatching(number, random)){
                 cout << endl << "You figured out the number i was thinking about. Well done!" << endl;
-                int points = calculatePoints(countGuesses);
+                points = calculatePoints(countGuesses);
                 cout << "Your points: " << points << endl << endl;
                 if(points>0){
                     bool playDoubleOrNothing = inputChoice("Do you want to play double or nothing?", "y", "n");
@@ -102,25 +106,32 @@ int main(){
             }
         }
         while(gameMode==2){
-            cout << "GAMEMODE 2" << endl;
-            vector<int> testV = makeArray(currentSessionVector, 5, range);
-            int randomNumber = getRandomElement(testV);
+            vector<int> randomVector = makeArray(currentSessionVector, 5, range);
+            int randomNumber = getRandomElement(randomVector);
             int chosenNum;
             bool elementFound = false;
+            cout << "Random number is: " << randomNumber << endl;
             while(!elementFound){
-                printArray(testV, "Alternatives from what you guessed on before:");
+                printArray(randomVector, "Alternatives from what you guessed on before:");
                 chosenNum = inputNumber("Enter one of the numbers: ", range);
-                elementFound = elementExists(testV, chosenNum);
+                elementFound = elementExists(randomVector, chosenNum);
                 if(!elementFound){
                     cout << "ERROR, does not exist!" << endl;
                 }
             }
             bool match = checkMatching(chosenNum, randomNumber);
             if(match){
+                points = points*2;
                 cout << ">>>>>>>>>>>>>>WINNER<<<<<<<<<<<<<<<" << endl << endl;
+                cout <<
             }else{
-                cout << ">>>>>>>>>>>>>>Loser<<<<<<<<<<<<<<<" << endl << endl;
+                points = 0;
+                cout << ">>>>>>>>>>>>>>Loser<<<<<<<<<<<<<<<<" << endl << endl;
+                cout << "Sorry, you chose the wrong number. You should have chosen: " << randomNumber << endl;
             }
+            cout << "Your points: " << points << endl;
+
+            cin.get();
             //gameMode=0;
             //gameOver=true;
             //merge vectors
@@ -136,6 +147,17 @@ void initValues(){
 
 void welcomePlayer(){
     cout << "Welcome to the game" << endl;
+    bool showRules = inputChoice("Do you want to see the rules?", "y", "n");
+    if(showRules){
+        cout << "Guess which number the computer is thinking about." << endl;
+        cout << "Points will be awarded depending on how many guesses ";
+        cout << "it took before a correct guess was made." << endl << endl;
+        cout << "The points are as following:" << endl;
+        cout << "10p for 1 guess, ";
+        cout << "5p for 2 guesses, ";
+        cout << "1p for between 3 and under 10 guesses." << endl << endl;
+
+    }
 }
 
 int inputNumber(string message, int max_range){
