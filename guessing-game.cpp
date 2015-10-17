@@ -23,10 +23,11 @@ bool elementExists(vector<int> inputArray, int number);
 int calculatePoints(int countGuesses);
 int getRandomElement(vector<int> inputArray);
 void clearCin();
-void printArray(vector<int> vector, string message);
-void printEasyArray(vector<int> vector, int number, string message);
+void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, string message);
+void printEasyArray(vector<int> inputArray, int number, string message);
 void clearScreen();
 void printTest(int maxWidth, string output);
+void welcomeDoubleOrNothing(int randomVectorSize);
 
 int main(){
 
@@ -106,13 +107,16 @@ int main(){
             }
         }
         while(gameMode==2){
-            vector<int> randomVector = makeArray(currentSessionVector, 5, range);
+            int randomVectorSize = 5;
+            vector<int> randomVector = makeArray(currentSessionVector, randomVectorSize, range);
             int randomNumber = getRandomElement(randomVector);
             int chosenNum;
             bool elementFound = false;
             cout << "Random number is: " << randomNumber << endl;
+            welcomeDoubleOrNothing(randomVectorSize);
             while(!elementFound){
-                printArray(randomVector, "Alternatives from what you guessed on before:");
+                printChosenArray(randomVector, currentSessionVector, "Alternatives from what you guessed on before:");
+                cout << endl;
                 chosenNum = inputNumber("Enter one of the numbers: ", range);
                 elementFound = elementExists(randomVector, chosenNum);
                 if(!elementFound){
@@ -123,7 +127,7 @@ int main(){
             if(match){
                 points = points*2;
                 cout << ">>>>>>>>>>>>>>WINNER<<<<<<<<<<<<<<<" << endl << endl;
-                cout <<
+
             }else{
                 points = 0;
                 cout << ">>>>>>>>>>>>>>Loser<<<<<<<<<<<<<<<<" << endl << endl;
@@ -158,6 +162,14 @@ void welcomePlayer(){
         cout << "1p for between 3 and under 10 guesses." << endl << endl;
 
     }
+}
+
+void welcomeDoubleOrNothing(int randomVectorSize){
+    cout << "Welcome to Double or Nothing, " << randomVectorSize;
+    cout << " numbers will be chosen from your previous guesses." << endl;
+    cout << "If you guessed correctly and the number of guesses was under ";
+    cout << randomVectorSize << ", then the rest of the numbers will be random.";
+    cout << endl << endl;
 }
 
 int inputNumber(string message, int max_range){
@@ -295,7 +307,7 @@ vector<int> makeArray(vector<int> inputArray, int size, int maxRandom){
     return outputArray;
 
 }
-
+/*
 void printArray(vector<int> vector, string message){
     cout << message << endl;
     if(vector.size()>0){
@@ -305,19 +317,39 @@ void printArray(vector<int> vector, string message){
     }
     cout << endl;
 }
+*/
 
-void printEasyArray(vector<int> vector, int number, string message){
+void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, string message){
     cout << message << endl;
-    if(vector.size()>0){
-        for(int i=0; i<vector.size(); i++){
-            if(vector.at(i)>number){
-                cout << " <-[" << vector.at(i) << "] ";
+    if(inputArray.size()>0){
+        for(int i=0; i<inputArray.size(); i++){
+            bool checkChosen = false;
+            for(int j=0; j<currentSessionVector.size(); j++){
+                if(inputArray.at(i)==currentSessionVector.at(j)){
+                    cout << "(" << inputArray.at(i) << ") ";
+                    checkChosen = true;
+                }
             }
-            else if(vector.at(i)<number){
-                cout << " [" << vector.at(i) << "]-> ";
+            if(!checkChosen){
+                cout << inputArray.at(i) << " ";
+            }
+        }
+    }
+    cout << endl;
+}
+
+void printEasyArray(vector<int> inputArray, int number, string message){
+    cout << message << endl;
+    if(inputArray.size()>0){
+        for(int i=0; i<inputArray.size(); i++){
+            if(inputArray.at(i)>number){
+                cout << " <-[" << inputArray.at(i) << "] ";
+            }
+            else if(inputArray.at(i)<number){
+                cout << " [" << inputArray.at(i) << "]-> ";
             }
             else{
-                cout << "[" << vector.at(i) << "] ";
+                cout << "[" << inputArray.at(i) << "] ";
             }
         }
     }
