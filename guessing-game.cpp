@@ -24,7 +24,7 @@ int calculatePoints(int countGuesses);
 int getRandomElement(vector<int> inputArray);
 void clearCin();
 void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, string message);
-void printEasyArray(vector<int> inputArray, int number, string message);
+void printArray(vector<int> inputArray, int number, string message);
 void clearScreen();
 void printTest(int maxWidth, string output);
 void welcomeDoubleOrNothing(int randomVectorSize);
@@ -32,6 +32,8 @@ void welcomeDoubleOrNothing(int randomVectorSize);
 int main(){
 
     initValues();
+
+    clearScreen();
 
     welcomePlayer();
 
@@ -42,32 +44,38 @@ int main(){
     int range = inputRange(defaultRange, useCustomRange, "Choose a range:");
 
     int gameOver = false;
+    int points = 0;
 
     vector<int> allGamesVector;
-    int gameMode = 1;
 
     while(gameOver==false){
 
-        int points = 0;
-        int countGuesses = 0;
-        int random = generateRandom(range, 1);
+        bool currentGameRunning = true;
+
         vector<int> currentSessionVector;
 
-        while(gameMode == 1){
+        int countGuesses = 0;
+        int random = generateRandom(range, 1);
 
-            cout << endl << "Random number: " << random << endl;
+        while(currentGameRunning){
+
+            bool playDoubleOrNothing = false;
+            bool restart = false;
+
+            //cout << endl << "Random number: " << random << endl;
             if(currentSessionVector.size()>0){
-                printEasyArray(currentSessionVector, random, "These are the guesses you made before:");
+                printArray(currentSessionVector, random, "These are the guesses you made so far:");
             }
 
             int number;
             bool checkDuplicate = true;
             while(checkDuplicate){
-                number = inputNumber("Guess which number i am thinking about:", range);
+                cout << "Guess which number between 0 and " << range << " i am thinking about: ";
+                number = inputNumber("", range);
                 bool duplicateExist = elementExists(currentSessionVector, number);
                 if(duplicateExist){
                 cout << "Error, you have already guessed on this number!" << endl;
-                printEasyArray(currentSessionVector, random, "These are the guesses you made before:");
+                printArray(currentSessionVector, random, "These are the guesses you made before:");
                 }
                 else{
                     checkDuplicate = false;
@@ -75,28 +83,27 @@ int main(){
             }
 
             currentSessionVector = appendToArray(currentSessionVector, number);
-            //currentSessionVector.push_back(number);
+            allGamesVector = appendToArray(allGamesVector, number);
+
             countGuesses++;
 
             if(checkMatching(number, random)){
                 cout << endl << "You figured out the number i was thinking about. Well done!" << endl;
-                points = calculatePoints(countGuesses);
+                int calcPoints = calculatePoints(countGuesses);
+                points = points + calcPoints;
                 cout << "Your points: " << points << endl << endl;
                 if(points>0){
-                    bool playDoubleOrNothing = inputChoice("Do you want to play double or nothing?", "y", "n");
-                    if(playDoubleOrNothing){
-                        gameMode=2;
+                    playDoubleOrNothing = inputChoice("Do you want to play double or nothing?", "y", "n");
+                    if(!playDoubleOrNothing){
+                        bool continuePlaying = inputChoice("Do you want to keep playing?", "y", "n");
+                        if(!continuePlaying){
+                            gameOver=true;
+                        }else{
+                            restart=true;
+                        }
                     }
                 }else{
-                    bool restart = inputChoice("Game Over, do you want to play again?", "y", "n");
-                    if(restart){
-                        cout << endl << "Restarting..." << endl;
-                        //Fix later
-                    }
-                    else{
-                        gameMode=0;
-                        gameOver=true;
-                    }
+                    gameOver=true;
                 }
             }
             else if(checkLower(number, random)){
@@ -105,43 +112,64 @@ int main(){
             else{
                 cout << endl << "The number i am thinking about is smaller..." << endl << endl;
             }
-        }
-        while(gameMode==2){
-            int randomVectorSize = 5;
-            vector<int> randomVector = makeArray(currentSessionVector, randomVectorSize, range);
-            int randomNumber = getRandomElement(randomVector);
-            int chosenNum;
-            bool elementFound = false;
-            cout << "Random number is: " << randomNumber << endl;
-            welcomeDoubleOrNothing(randomVectorSize);
-            while(!elementFound){
-                printChosenArray(randomVector, currentSessionVector, "Alternatives from what you guessed on before:");
-                cout << endl;
-                chosenNum = inputNumber("Enter one of the numbers: ", range);
-                elementFound = elementExists(randomVector, chosenNum);
-                if(!elementFound){
-                    cout << "ERROR, does not exist!" << endl;
+
+            if(playDoubleOrNothing){
+                int randomVectorSize = 5;
+                vector<int> randomVector;
+                randomVector = makeArray(allGamesVector, randomVectorSize, range);
+                int randomNumber = getRandomElement(randomVector);
+                int chosenNum;
+                bool elementFound = false;
+                //cout << "Random number is: " << randomNumber << endl;
+                welcomeDoubleOrNothing(randomVectorSize);
+                while(!elementFound){
+                    printChosenArray(randomVector, allGamesVector, "Alternatives from what you guessed on before:");
+                    cout << endl;
+                    chosenNum = inputNumber("Enter one of the numbers: ", range);
+                    elementFound = elementExists(randomVector, chosenNum);
+                    if(!elementFound){
+                        cout << "ERROR, does not exist!" << endl;
+                    }
+                }
+                bool match = checkMatching(chosenNum, randomNumber);
+                if(match){
+                    points = points*2;
+                    cout << ">>>>>>>>>>>>>>WINNER<<<<<<<<<<<<<<<" << endl << endl;
+
+                }else{
+                    points = 0;
+                    cout << ">>>>>>>>>>>>>>Loser<<<<<<<<<<<<<<<<" << endl << endl;
+                    cout << "Sorry, you chose the wrong number. You should have chosen: " << randomNumber << endl;
+                }
+                cout << "Your points: " << points << endl;
+                if(points>0){
+                    bool continuePlaying = inputChoice("Do you want to guess again?, all points and previous guesses will be saved.", "y", "n");
+                    if(!continuePlaying){
+                        gameOver = true;
+                    }else{
+                        restart = true;
+                    }
+                }else{
+                    gameOver = true;
                 }
             }
-            bool match = checkMatching(chosenNum, randomNumber);
-            if(match){
-                points = points*2;
-                cout << ">>>>>>>>>>>>>>WINNER<<<<<<<<<<<<<<<" << endl << endl;
-
-            }else{
-                points = 0;
-                cout << ">>>>>>>>>>>>>>Loser<<<<<<<<<<<<<<<<" << endl << endl;
-                cout << "Sorry, you chose the wrong number. You should have chosen: " << randomNumber << endl;
+            if(gameOver){
+                cout << "Game Over" << endl;
+                if(points>0){
+                    cout << "Your highscore is: " << points << " points" << endl;
+                }
+                currentGameRunning=false;
             }
-            cout << "Your points: " << points << endl;
+            if(restart){
+                cout << "Restarting..." << endl;
+                currentGameRunning=false;
+            }
 
-            cin.get();
-            //gameMode=0;
-            //gameOver=true;
-            //merge vectors
         }
 
     }
+
+return 0;
 
 }
 
@@ -338,7 +366,7 @@ void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, 
     cout << endl;
 }
 
-void printEasyArray(vector<int> inputArray, int number, string message){
+void printArray(vector<int> inputArray, int number, string message){
     cout << message << endl;
     if(inputArray.size()>0){
         for(int i=0; i<inputArray.size(); i++){
