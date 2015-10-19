@@ -4,27 +4,27 @@
 #include <vector>
 #include <algorithm>
 #include <ctime>
+
 using namespace std;
 
 void initValues();
 void welcomePlayer();
-int inputNumber(string message, int max_range);
-bool inputChoice(string message, string firstChoice, string secondChoice);
-int inputRange(int defaultRange, bool customRange, string message);
-int chooseRange();
-bool checkMatching(int firstNumber, int secondNumber);
-bool checkLower(int firstNumber, int secondNumber);
-int generateRandom(int maxRandom, int offset);
-vector<int> appendToArray(vector<int> inputArray, int num);
-vector<int> makeArray(vector<int> inputArray, int size, int maxRandom);
-bool elementExists(vector<int> inputArray, int number);
-int calculatePoints(int countGuesses);
-int getRandomElement(vector<int> inputArray);
-void clearCin();
+void welcomeDoubleOrNothing(int randomVectorSize);
 void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, string message);
 void printArray(vector<int> inputArray, int number, string message);
+void clearCin();
 void clearScreen();
-void welcomeDoubleOrNothing(int randomVectorSize);
+int inputNumber(string message, int max_range);
+int inputRange(int defaultRange, bool customRange, string message);
+int generateRandom(int maxRandom, int offset);
+int getRandomElement(vector<int> inputArray);
+int calculatePoints(int countGuesses);
+bool inputChoice(string message, string firstChoice, string secondChoice);
+bool checkMatching(int firstNumber, int secondNumber);
+bool checkLower(int firstNumber, int secondNumber);
+bool elementExists(vector<int> inputArray, int number);
+vector<int> appendToArray(vector<int> inputArray, int num);
+vector<int> makeArray(vector<int> inputArray, int size, int maxRandom);
 
 int main(){
 
@@ -34,9 +34,9 @@ int main(){
 
     welcomePlayer();
 
-    bool useCustomRange = inputChoice("Do you want to choose a range?", "y", "n");
-
     int defaultRange = 50;
+
+    bool useCustomRange = inputChoice("Do you want to choose a range?", "y", "n");
 
     int range = inputRange(defaultRange, useCustomRange, "Choose a range:");
 
@@ -117,7 +117,7 @@ int main(){
                 int randomNumber = getRandomElement(randomVector);
                 int chosenNum;
                 bool elementFound = false;
-                //cout << "Random number is: " << randomNumber << endl;
+                cout << "Random number is: " << randomNumber << endl;
                 welcomeDoubleOrNothing(randomVectorSize);
                 while(!elementFound){
                     printChosenArray(randomVector, allGamesVector, "Alternatives from what you guessed on before:");
