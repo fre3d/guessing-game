@@ -10,7 +10,7 @@ using namespace std;
 void initValues();
 void welcomePlayer();
 void welcomeDoubleOrNothing(int randomVectorSize);
-void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, string message);
+void printHighlightArray(vector<int> inputArray, vector<int> currentSessionVector, string message);
 void printArray(vector<int> inputArray, int number, string message);
 void clearCin();
 void clearScreen();
@@ -63,7 +63,7 @@ int main(){
                 printArray(currentSessionVector, random, "These are the guesses you made so far:");
             }
 
-            cout << "Random number: " << random<< endl;
+            //cout << "Random number: " << random<< endl;
             int number;
             bool checkDuplicate = true;
             while(checkDuplicate){
@@ -117,10 +117,10 @@ int main(){
                 int randomNumber = getRandomElement(randomVector);
                 int chosenNum;
                 bool elementFound = false;
-                cout << "Random number is: " << randomNumber << endl;
+                //cout << "Random number is: " << randomNumber << endl;
                 welcomeDoubleOrNothing(randomVectorSize);
                 while(!elementFound){
-                    printChosenArray(randomVector, allGamesVector, "Alternatives from what you guessed on before:");
+                    printHighlightArray(randomVector, allGamesVector, "Alternatives from what you guessed on before:");
                     cout << endl;
                     chosenNum = inputNumber("Enter one of the numbers: ", range);
                     elementFound = elementExists(randomVector, chosenNum);
@@ -161,19 +161,19 @@ int main(){
                 cout << "Restarting..." << endl;
                 currentGameRunning=false;
             }
-
         }
-
     }
 
 return 0;
 
 }
 
+//Initiate some values
 void initValues(){
     srand(time(NULL));
 }
 
+/*Prints a message welcoming the player to the game*/
 void welcomePlayer(){
     cout << "Welcome to the game" << endl;
     bool showRules = inputChoice("Do you want to see the rules?", "y", "n");
@@ -189,6 +189,9 @@ void welcomePlayer(){
     }
 }
 
+/*
+Prints a message welcoming the player to the gamemode "Double or Nothing".
+*/
 void welcomeDoubleOrNothing(int randomVectorSize){
     cout << "Welcome to Double or Nothing, " << randomVectorSize;
     cout << " numbers will be chosen from your previous guesses." << endl;
@@ -198,6 +201,10 @@ void welcomeDoubleOrNothing(int randomVectorSize){
     cout << endl << endl;
 }
 
+/*
+Function for input of a number with a set range, prints a message before asking
+for input. Return number if valid.
+*/
 int inputNumber(string message, int max_range){
     int input;
     bool validInput = false;
@@ -224,6 +231,11 @@ int inputNumber(string message, int max_range){
     return input;
 }
 
+/*
+Handles input from the player, the choices that can be made are custom.
+Returns true or false depending on what the player chose if the input was
+valid.
+*/
 bool inputChoice(string message, string firstChoice, string secondChoice){
     bool validAnswer = false;
     bool answer;
@@ -248,6 +260,9 @@ bool inputChoice(string message, string firstChoice, string secondChoice){
     return answer;
 }
 
+/*
+
+*/
 int inputRange(int defaultRange, bool customRange, string message){
     int input;
     if(customRange){
@@ -333,19 +348,8 @@ vector<int> makeArray(vector<int> inputArray, int size, int maxRandom){
     return outputArray;
 
 }
-/*
-void printArray(vector<int> vector, string message){
-    cout << message << endl;
-    if(vector.size()>0){
-        for(int i=0; i<vector.size(); i++){
-            cout << "[" << vector.at(i) << "] ";
-        }
-    }
-    cout << endl;
-}
-*/
 
-void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, string message){
+void printHighlightArray(vector<int> inputArray, vector<int> currentSessionVector, string message){
     cout << message << endl;
     if(inputArray.size()>0){
         for(int i=0; i<inputArray.size(); i++){
