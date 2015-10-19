@@ -14,11 +14,9 @@ int inputRange(int defaultRange, bool customRange, string message);
 int chooseRange();
 bool checkMatching(int firstNumber, int secondNumber);
 bool checkLower(int firstNumber, int secondNumber);
-int returnCaseResult(int firstNumber, int secondNumber);
 int generateRandom(int maxRandom, int offset);
 vector<int> appendToArray(vector<int> inputArray, int num);
 vector<int> makeArray(vector<int> inputArray, int size, int maxRandom);
-vector<int> sortArray(vector<int> inputArray);
 bool elementExists(vector<int> inputArray, int number);
 int calculatePoints(int countGuesses);
 int getRandomElement(vector<int> inputArray);
@@ -26,7 +24,6 @@ void clearCin();
 void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, string message);
 void printArray(vector<int> inputArray, int number, string message);
 void clearScreen();
-void printTest(int maxWidth, string output);
 void welcomeDoubleOrNothing(int randomVectorSize);
 
 int main(){
@@ -62,11 +59,11 @@ int main(){
             bool playDoubleOrNothing = false;
             bool restart = false;
 
-            //cout << endl << "Random number: " << random << endl;
             if(currentSessionVector.size()>0){
                 printArray(currentSessionVector, random, "These are the guesses you made so far:");
             }
 
+            cout << "Random number: " << random<< endl;
             int number;
             bool checkDuplicate = true;
             while(checkDuplicate){
@@ -197,6 +194,7 @@ void welcomeDoubleOrNothing(int randomVectorSize){
     cout << " numbers will be chosen from your previous guesses." << endl;
     cout << "If you guessed correctly and the number of guesses was under ";
     cout << randomVectorSize << ", then the rest of the numbers will be random.";
+    cout << endl << "(Random numbers have a paranthesis around them)";
     cout << endl << endl;
 }
 
@@ -354,12 +352,12 @@ void printChosenArray(vector<int> inputArray, vector<int> currentSessionVector, 
             bool checkChosen = false;
             for(int j=0; j<currentSessionVector.size(); j++){
                 if(inputArray.at(i)==currentSessionVector.at(j)){
-                    cout << "(" << inputArray.at(i) << ") ";
+                    cout << inputArray.at(i) << " ";
                     checkChosen = true;
                 }
             }
             if(!checkChosen){
-                cout << inputArray.at(i) << " ";
+                cout << "(" << inputArray.at(i) << ") ";
             }
         }
     }
