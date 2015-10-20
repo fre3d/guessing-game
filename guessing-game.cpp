@@ -9,13 +9,12 @@ using namespace std;
 
 void initValues();
 void welcomePlayer();
-void welcomeDoubleOrNothing(int randomVectorSize);
+void welcomeDoubleOrNothing(int randomVectorSize, int vectorSize);
 void printHighlightArray(vector<int> inputArray, vector<int> currentSessionVector, string message);
 void printArray(vector<int> inputArray, int number, string message);
 void clearCin();
 void clearScreen();
 int inputNumber(string message, int max_range);
-int inputRange(int defaultRange, bool customRange, string message);
 int generateRandom(int maxRandom, int offset);
 int getRandomElement(vector<int> inputArray);
 int calculatePoints(int countGuesses);
@@ -38,7 +37,12 @@ int main(){
 
     bool useCustomRange = inputChoice("Do you want to choose a range?", "y", "n");
 
-    int range = inputRange(defaultRange, useCustomRange, "Choose a range:");
+    int range;
+    if(useCustomRange){
+        range = inputNumber("Choose a range:", 0);
+    }else{
+        range = defaultRange;
+    }
 
     int gameOver = false;
     int points = 0;
@@ -63,7 +67,7 @@ int main(){
                 printArray(currentSessionVector, random, "These are the guesses you made so far:");
             }
 
-            //cout << "Random number: " << random<< endl;
+            cout << "Random number: " << random<< endl;
             int number;
             bool checkDuplicate = true;
             while(checkDuplicate){
@@ -112,13 +116,14 @@ int main(){
 
             if(playDoubleOrNothing){
                 int randomVectorSize = 5;
+                int vectorSize = currentSessionVector.size();
                 vector<int> randomVector;
                 randomVector = makeArray(allGamesVector, randomVectorSize, range);
                 int randomNumber = getRandomElement(randomVector);
                 int chosenNum;
                 bool elementFound = false;
-                //cout << "Random number is: " << randomNumber << endl;
-                welcomeDoubleOrNothing(randomVectorSize);
+                cout << "Random number is: " << randomNumber << endl;
+                welcomeDoubleOrNothing(randomVectorSize, vectorSize);
                 while(!elementFound){
                     printHighlightArray(randomVector, allGamesVector, "Alternatives from what you guessed on before:");
                     cout << endl;
@@ -192,12 +197,18 @@ void welcomePlayer(){
 /*
 Prints a message welcoming the player to the gamemode "Double or Nothing".
 */
-void welcomeDoubleOrNothing(int randomVectorSize){
-    cout << "Welcome to Double or Nothing, " << randomVectorSize;
-    cout << " numbers will be chosen from your previous guesses." << endl;
-    cout << "If you guessed correctly and the number of guesses was under ";
-    cout << randomVectorSize << ", then the rest of the numbers will be random.";
-    cout << endl << "(Random numbers have a paranthesis around them)";
+void welcomeDoubleOrNothing(int randomVectorSize, int vectorSize){
+    cout << "Welcome to Double or Nothing, " << endl;
+    cout << randomVectorSize << " numbers will be chosen from your previous guesses.";
+    cout << endl << "Guess which of these " << randomVectorSize;
+    cout << " numbers i am thinking about." << endl;
+    cout << "If you guess correctly you double your points, otherwise you lose";
+    cout << " all your points." << endl;
+    if(vectorSize<randomVectorSize){
+        cout << endl << "Since you guessed correctly within " << randomVectorSize;
+        cout << " times, the rest of the list will be random numbers" << endl;
+        cout << "(Random numbers have a paranthesis around them)";
+    }
     cout << endl << endl;
 }
 
@@ -258,20 +269,6 @@ bool inputChoice(string message, string firstChoice, string secondChoice){
         }
     }
     return answer;
-}
-
-/*
-
-*/
-int inputRange(int defaultRange, bool customRange, string message){
-    int input;
-    if(customRange){
-        input = inputNumber(message, 0);
-    }
-    else{
-        input = defaultRange;
-    }
-    return input;
 }
 
 int generateRandom(int maxRandom, int offset)
