@@ -262,6 +262,13 @@ bool inputChoice(string message, string positive, string negative){
 bool inputChoice(string message, const vector<string>& positiveChoices, const vector<string>& negativeChoices){
     bool validAnswer = false;
     bool answer;
+
+    if (positiveChoices.size() == 0 || negativeChoices.size() == 0)
+    {
+        cerr << "Error: inputChoice called with zero length vectors." << endl;
+        exit(0);
+    }
+
     while(!validAnswer){
         string input;
         cout << message << ", [" << *positiveChoices.begin() << "] or [" << *negativeChoices.begin() << "]" << endl << "> ";
