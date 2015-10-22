@@ -19,11 +19,15 @@ int generateRandom(int maxRandom, int offset);
 int getRandomElement(vector<int> inputArray);
 int calculatePoints(int countGuesses);
 bool inputChoice(string message, string firstChoice, string secondChoice);
+bool inputChoice(string message, const vector<string>& firstChoice, const vector<string>& secondChoice);
 bool checkMatching(int firstNumber, int secondNumber);
 bool checkLower(int firstNumber, int secondNumber);
 bool elementExists(vector<int> inputArray, int number);
 vector<int> appendToArray(vector<int> inputArray, int num);
 vector<int> makeArray(vector<int> inputArray, int size, int maxRandom);
+
+const vector<string> yesSet = {"y","yes","sure","affirmative"};
+const vector<string> noSet = {"n","no","negative"};
 
 int main(){
 
@@ -35,7 +39,7 @@ int main(){
 
     int defaultRange = 50;
 
-    bool useCustomRange = inputChoice("Do you want to choose a range?", "y", "n");
+    bool useCustomRange = inputChoice("Do you want to choose a range?", yesSet, noSet);
 
     int range;
     if(useCustomRange){
@@ -71,7 +75,7 @@ int main(){
             int number;
             bool checkDuplicate = true;
             while(checkDuplicate){
-                cout << "Guess which number between 0 and " << range << " i am thinking about: ";
+                cout << "Guess which number between 0 and " << range << " I am thinking about: ";
                 number = inputNumber("", range);
                 bool duplicateExist = elementExists(currentSessionVector, number);
                 if(duplicateExist){
@@ -89,7 +93,7 @@ int main(){
             countGuesses++;
 
             if(checkMatching(number, random)){
-                cout << endl << "You figured out the number i was thinking about. Well done!" << endl;
+                cout << endl << "You figured out the number I was thinking about. Well done!" << endl;
                 int calcPoints = calculatePoints(countGuesses);
                 points = points + calcPoints;
                 cout << "Your points: " << points << endl << endl;
@@ -108,10 +112,10 @@ int main(){
                 }
             }
             else if(checkLower(number, random)){
-                cout << endl << "The number i am thinking about is larger..." << endl << endl;
+                cout << endl << "The number I am thinking about is larger..." << endl << endl;
             }
             else{
-                cout << endl << "The number i am thinking about is smaller..." << endl << endl;
+                cout << endl << "The number I am thinking about is smaller..." << endl << endl;
             }
 
             if(playDoubleOrNothing){
@@ -201,7 +205,7 @@ void welcomeDoubleOrNothing(int randomVectorSize, int vectorSize){
     cout << "Welcome to Double or Nothing, " << endl;
     cout << randomVectorSize << " numbers will be chosen from your previous guesses.";
     cout << endl << "Guess which of these " << randomVectorSize;
-    cout << " numbers i am thinking about." << endl;
+    cout << " numbers I am thinking about." << endl;
     cout << "If you guess correctly you double your points, otherwise you lose";
     cout << " all your points." << endl;
     if(vectorSize<randomVectorSize){
@@ -247,20 +251,35 @@ Handles input from the player, the choices that can be made are custom.
 Returns true or false depending on what the player chose if the input was
 valid.
 */
-bool inputChoice(string message, string firstChoice, string secondChoice){
+bool inputChoice(string message, string positive, string negative){
+    vector<string> positiveChoices;
+    positiveChoices.push_back(positive);
+    vector<string> negativeChoices;
+    negativeChoices.push_back(negative);
+    return inputChoice(message, positiveChoices, negativeChoices);
+}
+
+bool inputChoice(string message, const vector<string>& positiveChoices, const vector<string>& negativeChoices){
     bool validAnswer = false;
     bool answer;
+
+    if (positiveChoices.size() == 0 || negativeChoices.size() == 0)
+    {
+        cerr << "Error: inputChoice called with zero length vectors." << endl;
+        exit(0);
+    }
+
     while(!validAnswer){
         string input;
-        cout << message << ", [" << firstChoice << "] or [" << secondChoice << "]" << endl << "> ";
+        cout << message << ", [" << *positiveChoices.begin() << "] or [" << *negativeChoices.begin() << "]" << endl << "> ";
         cin >> input;
         clearCin();
         clearScreen();
-        if(input==firstChoice){
+        if( find(positiveChoices.begin(), positiveChoices.end(), input) != positiveChoices.end() ){
             answer = true;
             validAnswer = true;
         }
-        else if(input==secondChoice){
+        else if( find(negativeChoices.begin(), negativeChoices.end(), input) != negativeChoices.end() ){
             answer = false;
             validAnswer = true;
         }
